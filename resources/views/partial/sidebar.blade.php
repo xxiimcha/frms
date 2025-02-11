@@ -18,29 +18,39 @@
                     </a>
                 </li>
 
-                <!-- Franchise Manager Role -->
-                @if (Auth::user()->role === 'franchise_manager')
-                    <li class="nav-item">
-                        <a href="{{ url('franchises') }}" class="nav-link {{ Request::is('franchises') ? 'active' : '' }}" style="color: black; text-transform: uppercase;">
+                 <!-- Franchise Manager Role -->
+                 @if (Auth::user()->role === 'franchise_manager')
+                    <li class="nav-item has-treeview {{ Request::is('franchise/*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link" style="color: black; text-transform: uppercase;">
                             <i class="nav-icon fas fa-store"></i>
-                            <p>Franchises</p>
+                            <p>
+                                Franchise
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url('franchise-applications') }}" class="nav-link {{ Request::is('franchise-applications') ? 'active' : '' }}" style="color: black; text-transform: uppercase;">
-                            <i class="nav-icon fas fa-file-alt"></i>
-                            <p>Applications</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url('contracts') }}" class="nav-link {{ Request::is('contracts') ? 'active' : '' }}" style="color: black; text-transform: uppercase;">
-                            <i class="nav-icon fas fa-file-signature"></i>
-                            <p>Contracts</p>
-                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ url('franchise/add') }}" class="nav-link {{ Request::is('franchise/add') ? 'active' : '' }}" style="color: black;">
+                                    <i class="fas fa-plus nav-icon"></i>
+                                    <p>Add Franchise</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url('franchise/archived') }}" class="nav-link {{ Request::is('franchise/archived') ? 'active' : '' }}" style="color: black;">
+                                    <i class="fas fa-archive nav-icon"></i>
+                                    <p>Archived Franchise</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url('franchise/manage') }}" class="nav-link {{ Request::is('franchise/manage') ? 'active' : '' }}" style="color: black;">
+                                    <i class="fas fa-tasks nav-icon"></i>
+                                    <p>Manage Franchise</p>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 @endif
 
-                <!-- Accounting Role -->
                 @if (Auth::user()->role === 'accounting')
                     <li class="nav-item">
                         <a href="{{ url('payments') }}" class="nav-link {{ Request::is('payments') ? 'active' : '' }}" style="color: black; text-transform: uppercase;">
@@ -62,7 +72,6 @@
                     </li>
                 @endif
 
-                <!-- Admin Role -->
                 @if (Auth::user()->role === 'admin')
                     <li class="nav-item">
                         <a href="{{ url('users') }}" class="nav-link {{ Request::is('users') ? 'active' : '' }}" style="color: black; text-transform: uppercase;">
