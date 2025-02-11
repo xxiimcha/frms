@@ -12,36 +12,39 @@ class UserSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run()
     {
-        // Default users
-        $users = [
+        User::updateOrCreate(
+            ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin User',
                 'email' => 'admin@example.com',
                 'password' => Hash::make('password123'),
                 'role' => 'admin',
-            ],
+                'status' => 'active'
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'manager@example.com'],
             [
                 'name' => 'Franchise Manager',
                 'email' => 'manager@example.com',
                 'password' => Hash::make('password123'),
                 'role' => 'franchise_manager',
-            ],
+                'status' => 'active'
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'accounting@example.com'],
             [
                 'name' => 'Accounting User',
                 'email' => 'accounting@example.com',
                 'password' => Hash::make('password123'),
                 'role' => 'accounting',
-            ],
-        ];
-
-        // Insert users into the database
-        foreach ($users as $user) {
-            User::updateOrCreate(
-                ['email' => $user['email']], // Prevent duplicate entries
-                $user
-            );
-        }
+                'status' => 'inactive'
+            ]
+        );
     }
 }

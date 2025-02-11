@@ -17,15 +17,16 @@
   
   <div class="card-body">
     <table id="usersTable" class="table table-hover table-bordered">
-      <thead class="thead-dark">
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
+        <thead class="thead-dark">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
       <tbody>
         @foreach ($users as $user)
         <tr>
@@ -34,6 +35,18 @@
           <td>{{ $user->email }}</td>
           <td><span class="badge badge-info">{{ ucfirst($user->role) }}</span></td>
           <td>
+            @if($user->status === 'active')
+              <span class="badge badge-success">Active</span>
+            @else
+              <span class="badge badge-danger">Inactive</span>
+            @endif
+          </td>
+          <td>
+            <button class="btn btn-sm {{ $user->status === 'active' ? 'btn-danger' : 'btn-success' }}"
+                    onclick="changeStatus({{ $user->id }}, '{{ $user->status === 'active' ? 'inactive' : 'active' }}')">
+              <i class="fas {{ $user->status === 'active' ? 'fa-times' : 'fa-check' }}"></i>
+              {{ $user->status === 'active' ? 'Deactivate' : 'Activate' }}
+            </button>
             <button class="btn btn-warning btn-sm" onclick="editUser({{ $user }})" data-toggle="modal" data-target="#editUserModal">
               <i class="fas fa-edit"></i> Edit
             </button>
@@ -44,7 +57,7 @@
                 <i class="fas fa-trash"></i> Delete
               </button>
             </form>
-          </td>
+          </td> 
         </tr>
         @endforeach
       </tbody>
@@ -147,6 +160,14 @@
       "ordering": true,
       "info": true
     });
+
+    @if(session('success'))
+      toastr.success("{{ session('success') }}");
+    @endif
+
+    @if(session('error'))
+      toastr.error("{{ session('error') }}");
+    @endif
   });
 
   function editUser(user) {
@@ -156,5 +177,24 @@
     $('#editUserRole').val(user.role);
     $('#editUserForm').attr('action', '/users/' + user.id);
   }
+  
+  function changeStatus(userId, newStatus) {
+    $.ajax({
+      url: '/users/' + userId + '/status',
+      type: 'POST',
+      data: {
+        _token: '{{ csrf_token() }}',
+        status: newStatus
+      },
+      success: function(response) {
+        toastr.success(response.message);
+        setTimeout(() => location.reload(), 1000); // Refresh page after 1 sec
+      },
+      error: function(xhr) {
+        toastr.error('Error updating status.');
+      }
+    });
+  }
 </script>
+
 @endsection

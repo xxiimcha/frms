@@ -33,10 +33,32 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User added successfully.');
     }
 
-    public function destroy($id)
+    public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $user->delete();
+        $user->update($request->all());
+
+        return redirect()->route('users.index')->with('success', 'User updated successfully.');
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        $user->update(['status' => $request->status]);
+
+        return response()->json([
+            'message' => 'User status updated successfully.'
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        User::destroy($id);
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 }
