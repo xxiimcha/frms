@@ -1,6 +1,6 @@
-<aside class="main-sidebar sidebar-dark-danger elevation-4" style="background-color: #f1948a;">
+<aside class="main-sidebar sidebar-dark-warning elevation-4" style="background-color: #f9e79f;">
     <!-- Brand Logo -->
-    <a href="{{ url('/') }}" class="brand-link" style="background-color: #ec7063; color: black; text-transform: uppercase;">
+    <a href="{{ url('/') }}" class="brand-link" style="background-color: #f4d03f; color: black; text-transform: uppercase;">
         <img src="{{ asset('logo.png') }}" alt="FRMS Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">FRMS</span>
     </a>
