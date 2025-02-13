@@ -14,6 +14,13 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/franchise/manage', function () {
+    return view('franchise.manage');
+})->name('franchise.manage')->middleware('auth');
+Route::get('/franchise/add', function () {
+    return view('franchise.add');
+})->name('franchise.add')->middleware('auth');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard'); // Ensure you have a 'dashboard.blade.php' view
@@ -27,4 +34,6 @@ Route::middleware(['auth'])->group(function () {
 
     // New route for status update
     Route::post('/users/{id}/status', [UserController::class, 'updateStatus'])->name('users.status');
+
+    
 });

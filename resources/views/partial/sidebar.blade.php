@@ -5,7 +5,7 @@
         <span class="brand-text font-weight-light">FRMS</span>
     </a>
 
-    <!-- Sidebar -->
+    <!-- Sidebar --> 
     <div class="sidebar">
         <!-- Sidebar Menu -->
         <nav class="mt-2">
