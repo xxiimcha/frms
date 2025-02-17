@@ -5,26 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FranchiseRequirement extends Model
+class ActivityLog extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'franchise_id',
-        'letter_of_intent',
-        'resume',
-        'market_study',
-        'vicinity_map',
-        'presentation_fee',
-        'site_inspection',
-        'battery_test',
-        'valid_ids'
+        'action',
+        'module',
+        'description',
+        'ip_address',
     ];
 
-    protected $casts = [
-        'valid_ids' => 'array'
-    ];
-
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+ 
     public function franchise()
     {
         return $this->belongsTo(Franchise::class, 'franchise_id');

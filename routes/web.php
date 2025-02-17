@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
     // Franchise Management Routes
     Route::prefix('franchise')->group(function () {
         Route::get('/manage', [FranchiseController::class, 'index'])->name('franchise.manage');
-        Route::get('/add', [FranchiseController::class, 'create'])->name('franchise.add'); // Uses Controller instead of Closure
+        Route::get('/add', [FranchiseController::class, 'create'])->name('franchise.add');
         Route::post('/store', [FranchiseController::class, 'store'])->name('franchise.store');
         Route::get('/edit/{id}', [FranchiseController::class, 'edit'])->name('franchise.edit');
         Route::put('/update/{id}', [FranchiseController::class, 'update'])->name('franchise.update');
