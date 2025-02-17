@@ -15,11 +15,17 @@ class Franchise extends Model
         'franchisee_name',
         'contact_number',
         'variant',
-        'franchise_date'
-    ];
+        'franchise_date',
+        'status',
+    ];    
 
     public function requirements()
     {
         return $this->hasOne(FranchiseRequirement::class);
+    }
+
+    public function staff()
+    {
+        return $this->hasMany(FranchiseStaff::class);
     }
 }

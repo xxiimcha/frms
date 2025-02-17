@@ -5,13 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Franchise;
 use App\Models\FranchiseRequirement;
+use App\Models\FranchiseStaff;
 use Illuminate\Support\Facades\Storage;
 
 class FranchiseController extends Controller
 {
+
+    public function index()
+    {
+        $franchises = Franchise::all();
+
+        return view('franchise.manage', compact('franchises'));
+    }
+    
+    public function create()
+    {
+        return view('franchise.add');
+    }
+
     public function store(Request $request)
     {
-        // Validate required fields
         $request->validate([
             'branch' => 'required|string|max:255',
             'location' => 'required|string|max:255',
@@ -19,17 +32,16 @@ class FranchiseController extends Controller
             'contact_number' => 'required|string|max:20',
             'variant' => 'required|string|max:50',
             'franchise_date' => 'required|date',
+            'staff_name' => 'array|required',
+            'staff_name.*' => 'required|string|max:255',
+            'staff_designation' => 'array|required',
+            'staff_designation.*' => 'required|string|max:255',
         ]);
 
         // Create franchise record
-        $franchise = Franchise::create([
-            'branch' => $request->branch,
-            'location' => $request->location,
-            'franchisee_name' => $request->franchisee_name,
-            'contact_number' => $request->contact_number,
-            'variant' => $request->variant,
-            'franchise_date' => $request->franchise_date,
-        ]);
+        $franchise = Franchise::create($request->only([
+            'branch', 'location', 'franchisee_name', 'contact_number', 'variant', 'franchise_date'
+        ]));
 
         // Handle file uploads (Optional)
         $files = [];
@@ -72,6 +84,17 @@ class FranchiseController extends Controller
             'valid_ids' => json_encode($valid_ids),
         ]);
 
-        return redirect()->back()->with('success', 'Franchise added successfully!');
+        // ✅ Insert Staff Members
+        if ($request->has('staff_name') && $request->has('staff_designation')) {
+            foreach ($request->staff_name as $index => $name) {
+                FranchiseStaff::create([
+                    'franchise_id' => $franchise->id,
+                    'staff_name' => $name,
+                    'staff_designation' => $request->staff_designation[$index],
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Franchise, staff, and requirements added successfully!');
     }
 }

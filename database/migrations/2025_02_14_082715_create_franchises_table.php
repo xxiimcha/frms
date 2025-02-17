@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->string('contact_number');
             $table->string('variant');
             $table->date('franchise_date');
+            $table->enum('status', ['active', 'for renewal', 'closed', 'pending'])->default('pending'); // Added status column
             $table->timestamps();
         });
     }
