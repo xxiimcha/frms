@@ -25,7 +25,7 @@ class FranchiseController extends Controller
 
     public function show($id)
     {
-        $franchise = Franchise::with(['requirements', 'staff'])->findOrFail($id);
+        $franchise = Franchise::with(['requirements', 'staff', 'activity_logs.user'])->findOrFail($id);
         return view('franchise.view', compact('franchise'));
     }
 

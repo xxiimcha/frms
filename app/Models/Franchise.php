@@ -31,4 +31,9 @@ class Franchise extends Model
         return $this->hasMany(Staff::class, 'franchise_id');
     }
 
+    public function activity_logs()
+    {
+        return $this->hasMany(ActivityLog::class, 'franchise_id');
+    }
+
 }
