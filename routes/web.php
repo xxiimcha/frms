@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FranchiseController;
 use App\Http\Controllers\FranchiseVariantController;
+use App\Http\Controllers\QmtScheduleController;
 
 // Public Routes
 Route::get('/', function () {
@@ -55,4 +56,10 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}', [UserController::class, 'destroy'])->name('users.destroy');
         Route::post('/{id}/status', [UserController::class, 'updateStatus'])->name('users.status');
     });
+
+    Route::get('qmt/schedule', [QmtScheduleController::class, 'index'])->name('qmt.schedule');
+    Route::post('qmt/schedule/store', [QmtScheduleController::class, 'store'])->name('qmt.schedule.store');
+    Route::get('qmt/schedule/{id}/edit', [QmtScheduleController::class, 'edit'])->name('qmt.schedule.edit');
+    Route::post('qmt/schedule/{id}/update', [QmtScheduleController::class, 'update'])->name('qmt.schedule.update');
+    Route::delete('qmt/schedule/{id}', [QmtScheduleController::class, 'destroy'])->name('qmt.schedule.destroy');
 });

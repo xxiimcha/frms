@@ -36,4 +36,10 @@ class Franchise extends Model
         return $this->hasMany(ActivityLog::class, 'franchise_id');
     }
 
+    public function qmtSchedules()
+    {
+        return $this->hasMany(QmtSchedule::class, 'franchise_id');
+    }
+
+
 }

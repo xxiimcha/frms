@@ -47,7 +47,6 @@
                                     <p>Manage Franchise</p>
                                 </a>
                             </li>
-                            <!-- New Franchise Variant Menu Item -->
                             <li class="nav-item">
                                 <a href="{{ url('franchise/variants') }}" class="nav-link {{ Request::is('franchise/variants') ? 'active' : '' }}" style="color: black;">
                                     <i class="fas fa-tags nav-icon"></i>
@@ -57,6 +56,43 @@
                         </ul>
                     </li>
                 @endif
+
+                <!-- QMT Section -->
+                <li class="nav-item has-treeview {{ Request::is('qmt/*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link" style="color: black; text-transform: uppercase;">
+                        <i class="nav-icon fas fa-check-circle"></i>
+                        <p>
+                            QMT
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ url('qmt/reports') }}" class="nav-link {{ Request::is('qmt/reports') ? 'active' : '' }}" style="color: black;">
+                                <i class="fas fa-file-alt nav-icon"></i>
+                                <p>Quality Reports</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('qmt/inspections') }}" class="nav-link {{ Request::is('qmt/inspections') ? 'active' : '' }}" style="color: black;">
+                                <i class="fas fa-search nav-icon"></i>
+                                <p>Site Inspections</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('qmt/compliance') }}" class="nav-link {{ Request::is('qmt/compliance') ? 'active' : '' }}" style="color: black;">
+                                <i class="fas fa-exclamation-triangle nav-icon"></i>
+                                <p>Compliance</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('qmt/schedule') }}" class="nav-link {{ Request::is('qmt/schedule') ? 'active' : '' }}" style="color: black;">
+                                <i class="fas fa-calendar-alt nav-icon"></i>
+                                <p>QMT Schedule</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
                 @if (Auth::user()->role === 'accounting')
                     <li class="nav-item">
