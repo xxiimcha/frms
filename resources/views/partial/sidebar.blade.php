@@ -18,8 +18,8 @@
                     </a>
                 </li>
 
-                 <!-- Franchise Manager Role -->
-                 @if (Auth::user()->role === 'franchise_manager')
+                <!-- Franchise Manager Role -->
+                @if (Auth::user()->role === 'franchise_manager')
                     <li class="nav-item has-treeview {{ Request::is('franchise/*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link" style="color: black; text-transform: uppercase;">
                             <i class="nav-icon fas fa-store"></i>
@@ -45,6 +45,13 @@
                                 <a href="{{ url('franchise/manage') }}" class="nav-link {{ Request::is('franchise/manage') ? 'active' : '' }}" style="color: black;">
                                     <i class="fas fa-tasks nav-icon"></i>
                                     <p>Manage Franchise</p>
+                                </a>
+                            </li>
+                            <!-- New Franchise Variant Menu Item -->
+                            <li class="nav-item">
+                                <a href="{{ url('franchise/variants') }}" class="nav-link {{ Request::is('franchise/variants') ? 'active' : '' }}" style="color: black;">
+                                    <i class="fas fa-tags nav-icon"></i>
+                                    <p>Franchise Variants</p>
                                 </a>
                             </li>
                         </ul>

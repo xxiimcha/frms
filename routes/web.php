@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FranchiseController;
+use App\Http\Controllers\FranchiseVariantController;
 
 // Public Routes
 Route::get('/', function () {
@@ -36,6 +37,13 @@ Route::middleware('auth')->group(function () {
         Route::put('/update/{id}', [FranchiseController::class, 'update'])->name('franchise.update');
         Route::delete('/delete/{id}', [FranchiseController::class, 'destroy'])->name('franchise.delete');
         Route::get('/view/{id}', [FranchiseController::class, 'show'])->name('franchise.view');
+    });
+
+    Route::prefix('franchise/variants')->group(function () {
+        Route::get('/', [FranchiseVariantController::class, 'index'])->name('franchise.variants');
+        Route::post('/store', [FranchiseVariantController::class, 'store'])->name('franchise.variants.store');
+        Route::put('/update/{id}', [FranchiseVariantController::class, 'update'])->name('franchise.variants.update');
+        Route::delete('/delete/{id}', [FranchiseVariantController::class, 'destroy'])->name('franchise.variants.delete');
     });
 
     // User Management Routes (Admin Only)
