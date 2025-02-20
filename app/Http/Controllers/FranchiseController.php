@@ -9,6 +9,7 @@ use App\Models\FranchiseStaff;
 use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Models\FranchiseVariant;
 
 class FranchiseController extends Controller
 {
@@ -20,7 +21,8 @@ class FranchiseController extends Controller
 
     public function create()
     {
-        return view('franchise.add');
+        $variants = FranchiseVariant::all();
+        return view('franchise.add', compact('variants'));
     }
 
     public function show($id)
@@ -30,84 +32,132 @@ class FranchiseController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'branch' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'franchisee_name' => 'required|string|max:255',
-            'contact_number' => 'required|string|max:20',
-            'variant' => 'required|string|max:50',
-            'franchise_date' => 'required|date',
-            'staff_name' => 'array|required',
-            'staff_name.*' => 'required|string|max:255',
-            'staff_designation' => 'array|required',
-            'staff_designation.*' => 'required|string|max:255',
-        ]);
+{
+    $request->validate([
+        'branch_code' => 'required|string|max:50|unique:franchises,branch_code',
+        'branch' => 'required|string|max:255',
+        'region' => 'required|string|max:255',
+        'location' => 'required|string|max:255',
+        'franchisee_name' => 'required|string|max:255',
+        'contact_number' => 'required|string|max:20',
+        'email' => 'required|email|max:255|unique:franchises,email',
+        'birthday' => 'required|date',
+        'home_address' => 'required|string|max:500',
+        'variant_id' => 'required|exists:franchise_variants,id',
+        'franchise_date' => 'required|date',
+        'end_of_contract' => 'nullable|date|after_or_equal:franchise_date',
+        'staff_name' => 'array|required',
+        'staff_name.*' => 'required|string|max:255',
+        'staff_designation' => 'array|required',
+        'staff_designation.*' => 'required|string|max:255',
+    ]);
 
-        // Create franchise record
-        $franchise = Franchise::create($request->only([
-            'branch', 'location', 'franchisee_name', 'contact_number', 'variant', 'franchise_date'
-        ]));
+    // Create franchise record
+    $franchise = Franchise::create([
+        'branch_code' => $request->branch_code,
+        'branch' => $request->branch,
+        'region' => $request->region,
+        'location' => $request->location,
+        'franchisee_name' => $request->franchisee_name,
+        'contact_number' => $request->contact_number,
+        'email' => $request->email,
+        'birthday' => $request->birthday,
+        'home_address' => $request->home_address,
+        'variant_id' => $request->variant_id,
+        'franchise_date' => $request->franchise_date,
+        'end_of_contract' => $request->end_of_contract
+    ]);
 
-        $this->logActivity('Created Franchise', 'Franchise Management', "Franchise '{$franchise->branch}' was created.", $franchise->id);
+    // Log activity for franchise creation
+    $this->logActivity('Created Franchise', 'Franchise Management', 
+        "Franchise '{$franchise->branch}' was created with email '{$franchise->email}' and home address '{$franchise->home_address}'.", 
+        $franchise->id
+    );
 
-        // Handle file uploads (Optional)
-        $files = [];
-        $fileFields = [
-            'letter_of_intent',
-            'resume',
-            'market_study',
-            'vicinity_map',
-            'presentation_fee',
-            'site_inspection',
-            'battery_test'
-        ];
+    // Handle file uploads (Optimized Logging)
+    $files = [];
+    $fileFields = [
+        'letter_of_intent',
+        'resume',
+        'market_study',
+        'vicinity_map',
+        'presentation_fee',
+        'site_inspection',
+        'battery_test'
+    ];
 
-        foreach ($fileFields as $field) {
-            if ($request->hasFile($field)) {
-                $files[$field] = $request->file($field)->store('franchise_requirements');
-                $this->logActivity('Uploaded File', 'Franchise Management', "Uploaded {$field} for franchise '{$franchise->branch}'.", $franchise->id);
-            } else {
-                $files[$field] = null;
-            }
+    $uploadedFiles = [];
+
+    foreach ($fileFields as $field) {
+        if ($request->hasFile($field)) {
+            $files[$field] = $request->file($field)->store('franchise_requirements');
+            $uploadedFiles[] = $field;
+        } else {
+            $files[$field] = null;
         }
-
-        // Handle multiple file uploads for valid IDs
-        $valid_ids = [];
-        if ($request->hasFile('valid_ids')) {
-            foreach ($request->file('valid_ids') as $file) {
-                $valid_ids[] = $file->store('franchise_requirements');
-            }
-            $this->logActivity('Uploaded File', 'Franchise Management', "Uploaded valid IDs for franchise '{$franchise->branch}'.", $franchise->id);
-        }
-
-        // Create franchise requirements record
-        FranchiseRequirement::create([
-            'franchise_id' => $franchise->id,
-            'letter_of_intent' => $files['letter_of_intent'],
-            'resume' => $files['resume'],
-            'market_study' => $files['market_study'],
-            'vicinity_map' => $files['vicinity_map'],
-            'presentation_fee' => $files['presentation_fee'],
-            'site_inspection' => $files['site_inspection'],
-            'battery_test' => $files['battery_test'],
-            'valid_ids' => json_encode($valid_ids),
-        ]);
-
-        // Insert Staff Members
-        if ($request->has('staff_name') && $request->has('staff_designation')) {
-            foreach ($request->staff_name as $index => $name) {
-                FranchiseStaff::create([
-                    'franchise_id' => $franchise->id,
-                    'staff_name' => $name,
-                    'staff_designation' => $request->staff_designation[$index],
-                ]);
-                $this->logActivity('Added Staff', 'Franchise Management', "Added staff '{$name}' to franchise '{$franchise->branch}'.", $franchise->id);
-            }
-        }
-
-        return redirect()->back()->with('success', 'Franchise, staff, and requirements added successfully!');
     }
+
+    // Log activity for all uploaded files in a single entry
+    if (!empty($uploadedFiles)) {
+        $this->logActivity(
+            'Uploaded Files',
+            'Franchise Management',
+            "Uploaded " . implode(', ', $uploadedFiles) . " for franchise '{$franchise->branch}'.",
+            $franchise->id
+        );
+    }
+
+    // Handle multiple file uploads for valid IDs
+    $valid_ids = [];
+    if ($request->hasFile('valid_ids')) {
+        foreach ($request->file('valid_ids') as $file) {
+            $valid_ids[] = $file->store('franchise_requirements');
+        }
+        $this->logActivity('Uploaded Valid IDs', 'Franchise Management', 
+            "Uploaded valid IDs for franchise '{$franchise->branch}'.", 
+            $franchise->id
+        );
+    }
+
+    // Create franchise requirements record
+    FranchiseRequirement::create([
+        'franchise_id' => $franchise->id,
+        'letter_of_intent' => $files['letter_of_intent'],
+        'resume' => $files['resume'],
+        'market_study' => $files['market_study'],
+        'vicinity_map' => $files['vicinity_map'],
+        'presentation_fee' => $files['presentation_fee'],
+        'site_inspection' => $files['site_inspection'],
+        'battery_test' => $files['battery_test'],
+        'valid_ids' => json_encode($valid_ids),
+    ]);
+
+    // Insert Staff Members (Optimized Logging)
+    $staffNames = [];
+
+    if ($request->has('staff_name') && $request->has('staff_designation')) {
+        foreach ($request->staff_name as $index => $name) {
+            FranchiseStaff::create([
+                'franchise_id' => $franchise->id,
+                'staff_name' => $name,
+                'staff_designation' => $request->staff_designation[$index],
+            ]);
+            $staffNames[] = $name;
+        }
+    }
+
+    // Log activity for all staff members in a single entry
+    if (!empty($staffNames)) {
+        $this->logActivity(
+            'Added Staff',
+            'Franchise Management',
+            "Added staff members: " . implode(', ', $staffNames) . " to franchise '{$franchise->branch}'.",
+            $franchise->id
+        );
+    }
+
+    return redirect()->back()->with('success', 'Franchise, staff, and requirements added successfully!');
+}
 
     private function logActivity($action, $module, $description, $franchise_id = null)
     {

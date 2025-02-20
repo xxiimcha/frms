@@ -18,6 +18,7 @@ class Franchise extends Model
         'contact_number',
         'variant',
         'franchise_date',
+        'end_of_contract',
         'status',
     ];
 

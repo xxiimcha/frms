@@ -17,16 +17,22 @@
       <!-- Franchise Details -->
       <h5 class="mb-3">Franchise Details</h5>
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Branch Code</label>
+            <input type="text" name="branch_code" class="form-control" required>
+          </div>
+        </div>
+        <div class="col-md-4">
           <div class="form-group">
             <label>Branch Name</label>
             <input type="text" name="branch" class="form-control" required>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="form-group">
-            <label>Location</label>
-            <input type="text" name="location" class="form-control" required>
+            <label>Branch Area</label>
+            <input type="text" name="region" class="form-control" required>
           </div>
         </div>
       </div>
@@ -34,11 +40,54 @@
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
+            <label>Salon Address</label>
+            <input type="text" name="location" class="form-control" required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Variant</label>
+            <select name="variant_id" class="form-control" required>
+              <option value="">Select Variant</option>
+              @foreach($variants as $variant)
+                <option value="{{ $variant->id }}">{{ $variant->name }}</option>
+              @endforeach
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Date of Franchise</label>
+            <input type="date" name="franchise_date" class="form-control" required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>End of Contract</label>
+            <input type="date" name="end_of_contract" class="form-control" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Franchisee Details -->
+      <h5 class="mt-4">Franchisee Details</h5>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
             <label>Franchisee Name</label>
             <input type="text" name="franchisee_name" class="form-control" required>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" name="email_address" class="form-control" required>
+          </div>
+        </div>
+        <div class="col-md-4">
           <div class="form-group">
             <label>Contact Number</label>
             <input type="text" name="contact_number" class="form-control" required>
@@ -49,19 +98,14 @@
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
-            <label>Variant</label>
-            <select name="variant" class="form-control" required>
-              <option value="">Select Variant</option>
-              <option value="Standard">Standard</option>
-              <option value="Premium">Premium</option>
-              <option value="Luxury">Luxury</option>
-            </select>
+            <label>Birthday</label>
+            <input type="date" name="birthday" class="form-control" required>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <label>Date of Franchise</label>
-            <input type="date" name="franchise_date" class="form-control" required>
+            <label>Home Address</label>
+            <input type="text" name="home_address" class="form-control" required>
           </div>
         </div>
       </div>
